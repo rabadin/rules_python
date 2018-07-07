@@ -78,10 +78,11 @@ class Wheel(object):
       extra: if specified, include the additional dependencies
             of the named "extra".
 
-    Yields:
-      the names of requirements from the metadata.json
+    Returns:
+      set with the names of requirements from the metadata.json
     """
     # TODO(mattmoor): Is there a schema to follow for this?
+    dependencies = set()
     run_requires = self.metadata().get('run_requires', [])
     for requirement in run_requires:
       if requirement.get('extra') != extra:
@@ -96,7 +97,8 @@ class Wheel(object):
       for entry in requires:
         # Strip off any trailing versioning data.
         parts = re.split('[ ><=()]', entry)
-        yield parts[0]
+        dependencies.add(parts[0])
+    return dependencies
 
   def extras(self):
     return self.metadata().get('extras', [])
